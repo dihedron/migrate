@@ -12,6 +12,10 @@ import (
 	"github.com/dihedron/migrate/xmlstream"
 )
 
+type Key string
+
+const Version Key = "version"
+
 type POM struct {
 	//Files []string `short:"f" long:"file" description:"The files to migrate" required:"yes"`
 	// Example of positional arguments
@@ -26,13 +30,13 @@ func DetectVersion(ctx context.Context, stack []string, tkn xml.Token) (context.
 		token, ok := tkn.(xml.CharData)
 		if ok {
 			fmt.Fprintf(os.Stderr, "VERSION: %s\n", strings.TrimSpace(string(token)))
-			return context.WithValue(ctx, "version", strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
+			return context.WithValue(ctx, Version, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
 		}
 	} else if len(stack) > 1 && stack[len(stack)-2] == "project" && stack[len(stack)-1] == "properties" {
 		token, ok := tkn.(xml.EndElement)
 		if ok {
 			//fmt.Fprintf(os.Stderr, "ADDING PROPERTY: %s\n", strings.TrimSpace(string(token)))
-			t := ctx.Value("version")
+			t := ctx.Value(Version)
 			if v, ok := t.(string); ok {
 				return ctx, []xml.Token{
 					xml.CharData("    "),
