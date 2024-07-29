@@ -1,5 +1,5 @@
-NAME := migrate_snapshot_repo
-DESCRIPTION := Simple Maven snapshot repo migration tool.
+NAME := migrate
+DESCRIPTION := Simple Maven POM and settings.xml migration tool.
 COPYRIGHT := 2024 © Andrea Funtò
 LICENSE := MIT
 LICENSE_URL := https://opensource.org/license/mit/

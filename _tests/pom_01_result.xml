@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>bdi.ict</groupId>
     <artifactId>ztraining-appl-luca-batch-parent</artifactId>
-    <version>0.0.13</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -11,6 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <revision>0.0.13${versionSuffix}</revision>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
