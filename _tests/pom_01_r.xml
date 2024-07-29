@@ -2,4 +2,33 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>bdi.ict</groupId>
     <artifactId>ztraining-appl-luca-batch-parent</artifactId>
-    <version>${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}${revision}
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>moduleA</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <revision>0.0.13${versionSuffix}</revision>
+    </properties>
+    <!--
+      <profiles>
+    <profile>
+        <id>snapshot</id>
+        <properties>
+            <revision>0.0.13-SNAPSHOT</revision>
+        </properties>
+    </profile>
+    <profile>
+        <id>release</id>
+        <properties>
+            <revision>0.0.13</revision>
+        </properties>
+    </profile>
+    </profiles>
+-->
+</project>

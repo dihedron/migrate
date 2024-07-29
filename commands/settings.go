@@ -20,7 +20,7 @@ func (cmd *Settings) Execute(args []string) error {
 	var result error
 
 	for _, path := range cmd.Args.Files {
-		err := xmlstream.ParseFile(path, os.Stdout)
+		err := xmlstream.ParseFile(path, os.Stdout, nil)
 		if err != nil {
 			result = errors.Join(result, err)
 		}
