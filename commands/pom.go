@@ -24,15 +24,19 @@ type POM struct {
 	} `positional-args:"yes" required:"yes"`
 }
 
-func DetectVersion(ctx context.Context, stack []string, tkn xml.Token) (context.Context, []xml.Token, error) {
+func DetectVersion(ctx context.Context, stack xmlstream.Stack, tkn xml.Token) (context.Context, []xml.Token, error) {
 	slog.Debug("handling token", "type", fmt.Sprintf("%T", tkn), "stack", stack)
-	if len(stack) > 1 && stack[len(stack)-2] == "project" && stack[len(stack)-1] == "version" {
+	if stack.Len() == 2 && stack.At(-2) == "project" && stack.At(-1) == "version" {
 		token, ok := tkn.(xml.CharData)
 		if ok {
-			fmt.Fprintf(os.Stderr, "VERSION: %s\n", strings.TrimSpace(string(token)))
 			return context.WithValue(ctx, Version, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
 		}
-	} else if len(stack) > 1 && stack[len(stack)-2] == "project" && stack[len(stack)-1] == "properties" {
+	} else if stack.Len() == 3 && stack.At(-3) == "project" && stack.At(-2) == "parent" && stack.At(-1) == "version" {
+		token, ok := tkn.(xml.CharData)
+		if ok {
+			return context.WithValue(ctx, Version, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
+		}
+	} else if stack.Len() > 1 && stack.At(-2) == "project" && stack.At(-1) == "properties" {
 		token, ok := tkn.(xml.EndElement)
 		if ok {
 			//fmt.Fprintf(os.Stderr, "ADDING PROPERTY: %s\n", strings.TrimSpace(string(token)))

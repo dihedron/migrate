@@ -13,11 +13,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type TokenHandler func(ctx context.Context, stack []string, token xml.Token) (context.Context, []xml.Token, error)
+type TokenHandler func(ctx context.Context, stack Stack, token xml.Token) (context.Context, []xml.Token, error)
 
 func Parse(r io.Reader, w io.Writer, handler TokenHandler) error {
 
-	stack := []string{}
+	stack1 := Stack{}
 
 	decoder := xml.NewDecoder(r)
 	ctx := context.Background()
@@ -35,7 +35,7 @@ func Parse(r io.Reader, w io.Writer, handler TokenHandler) error {
 
 		var tkns []xml.Token
 		if handler != nil {
-			ctx, tkns, err = handler(ctx, stack, tkn)
+			ctx, tkns, err = handler(ctx, stack1, tkn)
 			if err != nil {
 				slog.Error("error in call to handler on token", "token", tkn, "error", err)
 				return err
@@ -49,7 +49,7 @@ func Parse(r io.Reader, w io.Writer, handler TokenHandler) error {
 		for _, tkn := range tkns {
 			switch token := tkn.(type) {
 			case xml.StartElement:
-				stack = append(stack, token.Name.Local)
+				stack1.Push(token.Name.Local)
 				if token.Name.Space == "" {
 					fmt.Fprintf(w, "<%s", token.Name.Local)
 				} else {
@@ -67,11 +67,11 @@ func Parse(r io.Reader, w io.Writer, handler TokenHandler) error {
 				}
 				fmt.Fprintf(w, ">")
 			case xml.EndElement:
-				if len(stack) < 1 || stack[len(stack)-1] != token.Name.Local {
-					slog.Error("unbalanced XML", "start element", stack[len(stack)-1], "end element", token.Name.Local)
+				if stack1.Empty() || stack1.Peek() != token.Name.Local {
+					slog.Error("unbalanced XML", "start element", stack1.Peek(), "end element", token.Name.Local)
 					return errors.New("unbalanced XML")
 				}
-				stack = stack[:len(stack)-1]
+				stack1.Pop()
 				if token.Name.Space == "" {
 					fmt.Fprintf(w, "</%s>", token.Name.Local)
 				} else {
