@@ -13,6 +13,7 @@ import (
 )
 
 type Settings struct {
+	Command
 	Args struct {
 		Files []string
 	} `positional-args:"yes" required:"yes"`
@@ -23,17 +24,17 @@ func HandleSettingsXml(ctx context.Context, stack xmlstream.Stack, tkn xml.Token
 	if stack.Len() == 2 && stack.At(-2) == "project" && stack.At(-1) == "version" {
 		token, ok := tkn.(xml.CharData)
 		if ok {
-			return context.WithValue(ctx, Version, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
+			return context.WithValue(ctx, VersionKey, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
 		}
 	} else if stack.Len() == 3 && stack.At(-3) == "project" && stack.At(-2) == "parent" && stack.At(-1) == "version" {
 		token, ok := tkn.(xml.CharData)
 		if ok {
-			return context.WithValue(ctx, Version, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
+			return context.WithValue(ctx, VersionKey, strings.TrimSpace(string(token))), []xml.Token{xml.CharData("${revision}")}, nil
 		}
 	} else if stack.Len() > 1 && stack.At(-2) == "project" && stack.At(-1) == "properties" {
 		token, ok := tkn.(xml.EndElement)
 		if ok {
-			t := ctx.Value(Version)
+			t := ctx.Value(VersionKey)
 			if v, ok := t.(string); ok {
 				return ctx, []xml.Token{
 					xml.CharData("    "),
