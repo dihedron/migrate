@@ -1,3 +1,5 @@
+# VERSION 20240801-0
+
 .DEFAULT_GOAL := compile
 
 SHELL := /bin/bash
